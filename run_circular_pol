@@ -1,0 +1,78 @@
+#!/bin/bash  
+
+echo "Beginning of the parameter definition phase"
+
+# parametri
+
+Power_density_of_the_incident_field=1.02 
+
+Power_out_measured=0
+Power_refelcted_measured=151e-3
+
+theta_in=1.0224138758182783 #58.58 degree
+
+#for real_n in  $(seq 1.0001 1.0e-4 2.5)
+for real_n in  1.0001
+do
+
+Real_parts=( 1 $real_n 1 )
+
+for extinction_petridish in 0.0 
+
+do
+
+Extintion_parts=( 0 $extinction_petridish 0 )
+
+thickness_petri_dish=0.88e-3
+#for thickness_petri_dish in $(seq 0.88e-3 1.0e-5 1.06e-3) 
+
+#do
+
+Thicknesses=( $thickness_petri_dish )
+
+Number_of_interfaces=$((${#Thicknesses[*]}+1))
+
+#for lambda_0 in $(seq 975e-9 1e-9 985e-9)
+for lambda_0 in  980e-9
+do 
+
+echo $Number_of_interfaces > inputfile
+
+for item in ${Thicknesses[*]}
+do
+  echo $item >> inputfile
+done
+
+echo $lambda_0 >> inputfile
+echo $Power_density_of_the_incident_field >> inputfile
+echo $theta_in >> inputfile
+
+for index in $(seq 0 $((Number_of_interfaces)))
+do
+  echo ${Real_parts[$index]} >> inputfile
+  echo ${Extintion_parts[$index]} >> inputfile
+done
+
+echo $Power_out_measured >> inputfile
+echo $Power_refelcted_measured >> inputfile
+
+#  echo 'outputfile_circular_pol_wavelength_'$lambda_0'_input_power_'$Power_density_of_the_incident_field'_thickness_'${Thicknesses[0]}'_realn_'${Real_parts[1]}'_imagn_'${Extintion_parts[1]} >> inputfile
+
+#echo "Execution phase"
+
+g++ -lm -o main.o main_find_ref_index.cpp
+./main.o < inputfile >> 'outputfile_circular_pol_input_power_'$Power_density_of_the_incident_field'_imagn_'${Extintion_parts[1]}
+
+#cleaning 
+rm inputfile
+rm *.o
+
+done
+
+done
+
+done
+
+#done
+
+echo "Simulation complete"

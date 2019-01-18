@@ -1,0 +1,21 @@
+set terminal postscript eps enhanced "Helvetica" 20
+set output "reflection_coeff_vs_real_refractive_index.eps"
+#set key bottom right
+set key top left
+set title 'error in power vs real n'
+set grid
+set xrange [1:2]
+#set yrange [-1:1]
+set xlabel 'n_{real}'
+set ylabel 'extinction coefficinet'
+#set zlabel 'reflection coefficinet'
+#set ytics ("10^{-3}" 1.0e-3,"10^{-2}" 1.0e-2,"10^{-1}" 1.0e-1,"1" 1)
+set xtics 1, 0.1, 2
+#set logscale x
+#set logscale y
+#set format x "10^{%L}"
+#set format y "10^{%L}"
+
+
+splot 'outputfile_circular_pol_input_power_1.02_imagn_0.0' u 1:2:5 w l t 'surface plot', 0.1480392156862745 w lp t 'measured value'
+
